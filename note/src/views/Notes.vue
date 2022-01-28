@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>Note page</div>
 </template>
 
 <script>
