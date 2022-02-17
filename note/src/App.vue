@@ -2,7 +2,9 @@
   <v-app>
     <v-app-bar app color="dark" dark>
       <img src="./assets/logo.png" style="width: 30px" />
-      <v-toolbar-title class="ms-2 font-weight-bold">NOTE</v-toolbar-title>
+      <v-toolbar-title class="ms-2 font-weight-bold font-italic"
+        >NOTE</v-toolbar-title
+      >
 
       <v-spacer></v-spacer>
 
