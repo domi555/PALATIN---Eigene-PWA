@@ -7,7 +7,11 @@
       v-model="document.name"
     ></v-text-field>
 
-    <v-card v-for="field of document.field" :key="field.id" class="elevation-4">
+    <v-card
+      v-for="field of document.field"
+      :key="field.id"
+      class="mb-3 elevation-4"
+    >
       <div class="pa-3">
         <v-text-field
           filled
@@ -31,6 +35,7 @@
         >
       </div>
     </v-card>
+    <v-btn small to="/" class="orange lighten-1 white--text">Add</v-btn>
   </div>
 </template>
 
