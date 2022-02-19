@@ -1,19 +1,20 @@
 <template>
-  <div class="ma-3">
+  <div @mousemove="paint" @mousedown="penDOWN" @mouseup="penUP" class="ma-3">
     <div class="d-flex flex-column align-start">
+      <canvas ref="surface" class="mb-3 elevation-4"></canvas>
+
       <v-spacer></v-spacer>
 
       <div>
-        <v-btn
-          small
-          @click="run"
-          class="me-2 orange lighten-1 white--text"
+        <v-btn small @click="run" class="me-2 orange lighten-1 white--text"
           >Done</v-btn
         >
         <v-btn small @click="clear" class="orange lighten-2 white--text"
           >Clear</v-btn
         >
       </div>
+
+      <p>{{ result }}</p>
     </div>
   </div>
 </template>
@@ -39,8 +40,9 @@ export default {
   },
 
   mounted() {
-    this.canvas = this.$refs['canvas'];
+    this.canvas = this.$refs['surface'];
     this.canvas.width = window.innerWidth - 50;
+    this.canvas.height = window.innerHeight - 170;
     this.context = this.canvas.getContext('2d');
 
     this.context.fillStyle = '#FFFFFF';
