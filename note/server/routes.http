@@ -1,33 +1,38 @@
-### NOTES --- --- ---
+### notes
 GET http://localhost:3000/notes
-################################
+###
 POST http://localhost:3000/notes
 Content-Type: application/json
 
 {
   "name": "Note"
 }
-################################
+###
 DELETE http://localhost:3000/notes/1
 
-### FIELDS --- --- ---
-GET http://localhost:3000/notes/1/fields
-################################
-POST http://localhost:3000/notes/1/fields
+
+### fields
+GET http://localhost:3000/fields
+###
+GET http://localhost:3000/fields/1
+###
+POST http://localhost:3000/fields
 Content-Type: application/json
 
 {
   "name": "Field",
-  "content": "...",
-  "attachment": "...",
+  "content": "Content",
+  "attachment": "Attachment",
+  "note_id": 1
 }
-################################
-PATCH http://localhost:3000/notes/1/fields
+###
+PATCH http://localhost:3000/fields/1
 Content-Type: application/json
 
 {
   "name": "Field",
-  "content": "...",
+  "content": "Content",
+  "attachment": "Attachment"
 }
-################################
-DELETE http://localhost:3000/notes/1/fields/1
+###
+DELETE http://localhost:3000/fields/1

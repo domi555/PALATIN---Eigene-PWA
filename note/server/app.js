@@ -2,7 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const path = require('path');
-const routes = require('./routes/notes');
+const notes = require('./routes/notes');
+const fields = require('./routes/fields');
 
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
@@ -18,7 +19,8 @@ app.use(helmet());
 
 app.use(express.json());
 
-app.use('/', routes);
+app.use('/notes', notes);
+app.use('/fields', fields);
 
 app.use(notFound);
 app.use(errorHandler);

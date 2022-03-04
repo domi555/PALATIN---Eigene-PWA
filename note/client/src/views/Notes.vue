@@ -4,7 +4,7 @@
       <v-col v-for="note of notes" :key="note.id" cols="12" md="6" lg="4">
         <v-card class="ma-2 elevation-4">
           <v-card-actions>
-            <p class="ms-2 mb-0 text-subtitle-2">Name</p>
+            <p class="ms-2 mb-0 text-subtitle-2">{{ note.name }}</p>
 
             <v-spacer></v-spacer>
 
@@ -27,7 +27,7 @@
                   <v-btn
                     small
                     class="mb-2 orange lighten-1 white--text"
-                    @click="drop(note.id)"
+                    @click="deleteNote(note.id)"
                   >
                     Drop
                   </v-btn>
@@ -35,7 +35,10 @@
               </v-card>
             </v-dialog>
 
-            <v-btn small class="orange lighten-1 white--text" to="/edit/new"
+            <v-btn
+              small
+              class="orange lighten-1 white--text"
+              :to="`/edit/${note.id}`"
               >Open</v-btn
             >
           </v-card-actions>
@@ -46,30 +49,53 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'Home',
 
   data() {
     return {
-      notes: [
-        { id: '1', name: 'Name' },
-        { id: '2', name: 'Name' },
-        { id: '3', name: 'Name' },
-      ],
-
+      notes: [],
       dialog: false,
     };
   },
   props: {
+    serverAddress: { type: String },
     id: {
       type: Number,
     },
   },
 
+  async created() {
+    await this.getNotes();
+  },
   methods: {
-    drop(id) {
-      console.log(id);
-      this.dialog = false;
+    async getNotes() {
+      try {
+        const { data } = await axios({
+          url: `${this.serverAddress}/notes`,
+          method: 'GET',
+        });
+
+        this.notes = data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async deleteNote(id) {
+      try {
+        await axios({
+          url: `${this.serverAddress}/notes/${id}`,
+          method: 'DELETE',
+        });
+        await this.getNotes();
+
+        this.dialog = false;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };

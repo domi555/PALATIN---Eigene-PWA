@@ -1,10 +1,12 @@
 module.exports = {
   transpileDependencies: ['vuetify'],
+
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
       swSrc: 'public/service-worker.js',
     },
+
     manifestOptions: {
       name: 'Note',
       short_name: 'Note',
@@ -86,4 +88,6 @@ module.exports = {
       ],
     },
   },
+
+  outputDir: '../server/public',
 };
