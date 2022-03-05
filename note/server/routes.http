@@ -8,6 +8,13 @@ Content-Type: application/json
   "name": "Note"
 }
 ###
+PATCH http://localhost:3000/notes/1
+Content-Type: application/json
+
+{
+  "name": "Note"
+}
+###
 DELETE http://localhost:3000/notes/1
 
 
@@ -26,7 +33,7 @@ Content-Type: application/json
   "note_id": 1
 }
 ###
-PATCH http://localhost:3000/fields/1
+PATCH http://localhost:3000/fields/16
 Content-Type: application/json
 
 {

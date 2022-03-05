@@ -5,6 +5,7 @@
       color="orange lighten-1"
       label="Name..."
       v-model="name"
+      @change="patchNote"
     ></v-text-field>
 
     <v-card v-for="field of fields" :key="field.id" class="mb-3 elevation-4">
@@ -25,10 +26,19 @@
           @input="patchField(field)"
         ></v-textarea>
 
-        <v-btn small to="/pen/new" class="me-2 orange lighten-1 white--text"
+        <img v-if="field.attachment" :src="field.attachment" class="mb-3" />
+
+        <v-btn
+          small
+          :to="`/pen/${field.id}`"
+          class="me-2 orange lighten-1 white--text"
           >Pen input</v-btn
         >
-        <v-btn small to="/camera/new" class="me-2 orange lighten-1 white--text"
+        <v-btn
+          v-if="!field.attachment"
+          small
+          :to="`/camera/${field.id}`"
+          class="me-2 orange lighten-1 white--text"
           >Take image</v-btn
         >
         <v-btn
@@ -63,37 +73,45 @@ export default {
       type: String,
     },
   },
+  watch: {
+    id() {
+      if (this.id == 'new') {
+        this.fields = [];
+        this.getFields();
+      } else this.getFields();
+    },
+  },
 
   async created() {
-    if (this.id != 'new') {
-      await this.getFields();
-    } else {
-      try {
-        const { data } = await axios({
-          url: `${this.serverAddress}/notes`,
-          method: 'POST',
-          data: {
-            name: this.name,
-          },
-        });
-
-        this.id = data.id;
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    await this.getFields();
   },
   methods: {
     async getFields() {
-      try {
-        const { data } = await axios({
-          url: `${this.serverAddress}/fields/${this.id}`,
-          method: 'GET',
-        });
+      if (this.id == 'new') {
+        try {
+          const { data } = await axios({
+            url: `${this.serverAddress}/notes`,
+            method: 'POST',
+            data: {
+              name: this.name,
+            },
+          });
 
-        this.fields = data;
-      } catch (error) {
-        console.log(error);
+          this.$router.push(`/edit/${data.id}`);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          const { data } = await axios({
+            url: `${this.serverAddress}/fields/${this.id}`,
+            method: 'GET',
+          });
+
+          this.fields = data;
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
 
@@ -116,22 +134,37 @@ export default {
       }
     },
 
+    async patchNote() {
+      try {
+        await axios({
+          url: `${this.serverAddress}/notes/${this.id}`,
+          method: 'PATCH',
+          data: {
+            name: this.name,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async patchField(field) {
-      // try {
-      //   await axios({
-      //     url: `${this.serverAddress}/fields/${field.id}`,
-      //     method: 'PATCH',
-      //     data: {
-      //       name: field.name,
-      //       content: field.content,
-      //       attachment: field.attachment,
-      //     },
-      //   });
+      try {
+        await axios({
+          url: `${this.serverAddress}/fields/${field.id}`,
+          method: 'PATCH',
+          data: {
+            name: field.name,
+            content: field.content,
+            attachment: field.attachment,
+          },
+        });
 
-      //   await this.getFields();
-      // } catch (error) {
-      //   console.log(error);
-      // }
+        this.fields.find((el) => el.id == field.id).content = field.content;
+        this.fields.find((el) => el.id == field.id).attachment =
+          field.attachment;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async deleteField(id) {
@@ -149,3 +182,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+img {
+  display: block;
+  height: 200px;
+}
+</style>

@@ -21,6 +21,7 @@
 
 <script>
 import Tesseract from 'tesseract.js';
+import axios from 'axios';
 
 export default {
   name: 'Pen',
@@ -31,21 +32,35 @@ export default {
       enabled: false,
 
       result: '',
+      field: null,
     };
   },
   props: {
+    serverAddress: { type: String },
     id: {
       type: String,
     },
   },
 
-  mounted() {
+  async mounted() {
     this.canvas = this.$refs['surface'];
     this.canvas.width = window.innerWidth - 50;
     this.canvas.height = window.innerHeight - 170;
     this.context = this.canvas.getContext('2d');
 
     this.context.fillStyle = '#FFFFFF';
+
+    try {
+      const { data } = await axios({
+        url: `${this.serverAddress}/fields`,
+        method: 'GET',
+      });
+
+      const id = this.id;
+      this.field = data.find((el) => el.id == Number(id));
+    } catch (error) {
+      console.error(error);
+    }
   },
   methods: {
     paint(e) {
@@ -70,8 +85,25 @@ export default {
 
     async run() {
       const out = await Tesseract.recognize(this.canvas, 'eng');
-
       this.result = out.data.text;
+
+      setTimeout(async () => {
+        try {
+          await axios({
+            url: `${this.serverAddress}/fields/${this.field.id}`,
+            method: 'PATCH',
+            data: {
+              name: this.field.name,
+              content: this.result,
+              attachment: this.field.attachment,
+            },
+          });
+
+          this.$router.back();
+        } catch (error) {
+          console.error(error);
+        }
+      }, 2000);
     },
 
     clear() {

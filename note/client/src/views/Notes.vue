@@ -2,13 +2,13 @@
   <div>
     <v-row class="ma-2">
       <v-col v-for="note of notes" :key="note.id" cols="12" md="6" lg="4">
-        <v-card class="ma-2 elevation-4">
+        <v-card class="mx-2 mt-3 elevation-4">
           <v-card-actions>
             <p class="ms-2 mb-0 text-subtitle-2">{{ note.name }}</p>
 
             <v-spacer></v-spacer>
 
-            <v-dialog v-model="dialog" max-width="290">
+            <v-dialog v-model="dialog" max-width="290" :retain-focus="false">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   small
@@ -78,7 +78,18 @@ export default {
           method: 'GET',
         });
 
-        this.notes = data;
+        this.notes = data.sort((objA, objB) => {
+          let a = objA.name.toLowerCase();
+          let b = objB.name.toLowerCase();
+
+          if (a < b) {
+            return -1;
+          }
+          if (a > b) {
+            return 1;
+          }
+          return 0;
+        });
       } catch (error) {
         console.log(error);
       }
@@ -90,8 +101,8 @@ export default {
           url: `${this.serverAddress}/notes/${id}`,
           method: 'DELETE',
         });
-        await this.getNotes();
 
+        await this.getNotes();
         this.dialog = false;
       } catch (error) {
         console.log(error);

@@ -1,0 +1,16 @@
+X 5 Eigenes Logo
+X 5 Eigenes Farbschema
+X 5 Workbox integration (Caching für statische Inhalte)
+X 5 Update Funktionalität (siehe Arbeitsblatt)
+X 10 Responsive Design (mind.: Portrait, Landscape)
+10 Workbox für REST Service Calls (GET) konfiguriert (offline Read)
+
+5 Website Storage: Session-Store
+10 Website Storage: Index DB
+10 Pro Offline CUD Operation implementiert (siehe Arbeitsblatt)
+X 10 Einbindung von Outputs (Vibration, Text-2-Speech)
+5 PWA Feature: Background Local Notification
+5 PWA Feature: Background Push Messages (Server Push 2 Client)
+
+X 10 REST Server
+X 5 REST Server: DB Anbindung

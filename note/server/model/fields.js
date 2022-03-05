@@ -7,7 +7,6 @@ const getFields = async (id) => {
     }`,
     id ? [id] : null,
   );
-  console.log(rows);
   return rows;
 };
 
@@ -20,6 +19,7 @@ const postField = async (body) => {
 };
 
 const patchField = async (id, body) => {
+  console.log(body);
   const { rows } = await db.query(
     'UPDATE fields SET name = $1, content = $2, attachment = $3 WHERE id = $4',
     [body.name, body.content, body.attachment, id],

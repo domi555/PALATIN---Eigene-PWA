@@ -13,6 +13,14 @@ const postNote = async (name) => {
   return rows[0];
 };
 
+const patchNote = async (id, name) => {
+  const { rows } = await db.query('UPDATE notes SET name = $1 WHERE id = $2', [
+    name,
+    id,
+  ]);
+  return rows;
+};
+
 const deleteNote = async (id) => {
   const { rows } = await db.query('DELETE FROM notes WHERE id = $1', [id]);
   return rows;
@@ -21,5 +29,6 @@ const deleteNote = async (id) => {
 module.exports = {
   getNotes,
   postNote,
+  patchNote,
   deleteNote,
 };

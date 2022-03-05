@@ -14,11 +14,19 @@
     </div>
 
     <canvas ref="canvas" class="d-none"></canvas>
-    <input ref="upload" class="d-none" type="file" @change="picked" />
+    <input
+      ref="upload"
+      class="d-none"
+      type="file"
+      accept=".jpg,.png"
+      @change="picked"
+    />
   </main>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'Camera',
 
@@ -29,7 +37,15 @@ export default {
 
       select: false,
       file: null,
+
+      field: null,
     };
+  },
+  props: {
+    serverAddress: { type: String },
+    id: {
+      type: Number,
+    },
   },
 
   async mounted() {
@@ -42,9 +58,15 @@ export default {
         video: true,
         facingMode: { exact: 'environment' },
       });
-
       this.video.srcObject = this.media;
       this.video.play();
+
+      const { data } = await axios({
+        url: `${this.serverAddress}/fields`,
+        method: 'GET',
+      });
+      const id = this.id;
+      this.field = data.find((el) => el.id == Number(id));
     } catch (e) {
       console.error(e);
     }
@@ -60,7 +82,25 @@ export default {
 
       this.context.drawImage(this.video, 0, 0, setup.width, setup.height);
 
-      alert('Done');
+      this.canvas.toBlob(async (blob) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = async () => {
+          const base64 = reader.result;
+
+          await axios({
+            url: `${this.serverAddress}/fields/${this.field.id}`,
+            method: 'PATCH',
+            data: {
+              name: this.field.name,
+              content: this.field.content,
+              attachment: base64,
+            },
+          });
+
+          this.$router.back();
+        };
+      });
     },
     upload() {
       this.select = true;
@@ -75,10 +115,30 @@ export default {
 
       this.$refs.upload.click();
     },
-    picked(e) {
-      this.file = e.target.files[0];
 
-      alert('Done');
+    async picked(e) {
+      const fileToBase64 = (file) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        });
+
+      this.file = e.target.files[0];
+      const data = await fileToBase64(this.file);
+
+      await axios({
+        url: `${this.serverAddress}/fields/${this.field.id}`,
+        method: 'PATCH',
+        data: {
+          name: this.field.name,
+          content: this.field.content,
+          attachment: data,
+        },
+      });
+
+      this.$router.back();
     },
 
     ready() {},
