@@ -10,7 +10,9 @@
       >
         <v-card class="mx-2 mt-3 elevation-4">
           <v-card-actions>
-            <p class="ms-2 mb-0 text-subtitle-2">{{ note.name }}</p>
+            <p class="ms-2 mb-0 text-subtitle-2">
+              {{ note.isUpdated != '' ? note.name : note.isUpdated }}
+            </p>
 
             <v-spacer></v-spacer>
 
@@ -36,6 +38,39 @@
                     @click="deleteNote(note.id)"
                   >
                     Drop
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="update" max-width="290" :retain-focus="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  small
+                  plain
+                  class="gray--text lighten-2"
+                  v-bind="attrs"
+                  v-on="on"
+                  >Rename</v-btn
+                >
+              </template>
+              <v-card>
+                <v-text-field
+                  filled
+                  color="orange lighten-1"
+                  label="New name..."
+                  v-model="updateName"
+                  class="mx-3 pt-3"
+                ></v-text-field>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    small
+                    class="mb-2 orange lighten-1 white--text"
+                    @click="updateNote(note.id)"
+                  >
+                    Rename
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -67,6 +102,9 @@ export default {
 
       notes: [],
       dialog: false,
+
+      update: false,
+      updateName: '',
     };
   },
   props: {
@@ -82,6 +120,11 @@ export default {
         const deleted = this.notes.filter((el) => el.isDeleted);
         deleted.forEach((el) => {
           this.deleteOnlineNote(el.id);
+        });
+
+        const updated = this.notes.filter((el) => el.isUpdated != '');
+        updated.forEach((el) => {
+          this.updateOnlineNote(el.id);
         });
       }
     },
@@ -125,7 +168,7 @@ export default {
             }
             return 0;
           })
-          .map((el) => ({ ...el, isDeleted: false }));
+          .map((el) => ({ ...el, isDeleted: false, isUpdated: null }));
 
         this.db.clear('notes');
         for (let e of this.notes) {
@@ -172,6 +215,36 @@ export default {
     async deleteStoredNote(id) {
       let note = await this.db.get('notes', Number(id));
       note.isDeleted = true;
+
+      this.db.put('notes', note);
+    },
+
+    async updateNote(id) {
+      console.log(this.offline);
+      if (this.offline) await this.updateStoredNote(id);
+      else await this.updateOnlineNote(id);
+
+      this.update = false;
+      this.updateName = '';
+
+      await this.getNotes();
+    },
+    async updateOnlineNote(id) {
+      try {
+        await axios({
+          url: `${this.serverAddress}/notes/${id}`,
+          method: 'PATCH',
+          data: {
+            name: this.updateName,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async updateStoredNote(id) {
+      let note = await this.db.get('notes', Number(id));
+      note.isUpdated = this.updateName;
 
       this.db.put('notes', note);
     },

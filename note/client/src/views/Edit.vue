@@ -50,6 +50,7 @@
           small
           @click="deleteField(field.id)"
           class="orange lighten-1 white--text"
+          :disabled="offline"
           >Delete</v-btn
         >
       </div>
