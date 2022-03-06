@@ -6,12 +6,12 @@ if (workbox) {
   workbox.setConfig({ debug: true });
   workbox.precaching.precacheAndRoute(self.__precacheManifest);
 
-  workbox.routing.registerRoute(
-    '/notes',
-    new workbox.strategies.StaleWhileRevalidate({
-      cacheName: 'note-cache',
-    }),
-  );
+  // workbox.routing.registerRoute(
+  //   '/notes',
+  //   new workbox.strategies.StaleWhileRevalidate({
+  //     cacheName: 'note-cache',
+  //   }),
+  // );
 
   workbox.routing.registerRoute(
     '/fields',

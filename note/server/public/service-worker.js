@@ -1,4 +1,4 @@
-importScripts("/precache-manifest.a3837627478a14f25dad4e601b885c44.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
+importScripts("/precache-manifest.c0aafd95d1fcdd5da99b992837f94fae.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 /* global workbox */
 
@@ -8,12 +8,12 @@ if (workbox) {
   workbox.setConfig({ debug: true });
   workbox.precaching.precacheAndRoute(self.__precacheManifest);
 
-  workbox.routing.registerRoute(
-    '/notes',
-    new workbox.strategies.StaleWhileRevalidate({
-      cacheName: 'note-cache',
-    }),
-  );
+  // workbox.routing.registerRoute(
+  //   '/notes',
+  //   new workbox.strategies.StaleWhileRevalidate({
+  //     cacheName: 'note-cache',
+  //   }),
+  // );
 
   workbox.routing.registerRoute(
     '/fields',

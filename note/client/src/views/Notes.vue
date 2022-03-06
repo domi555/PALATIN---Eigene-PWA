@@ -50,35 +50,91 @@
 
 <script>
 import axios from 'axios';
+import { openDB } from 'idb';
 
 export default {
   name: 'Home',
 
   data() {
     return {
+      db: null,
+
       notes: [],
       dialog: false,
     };
   },
   props: {
     serverAddress: { type: String },
+    offline: { type: Boolean },
     id: {
       type: Number,
     },
   },
+  watch: {
+    offline(online) {
+      console.log('synced');
+      if (online) {
+        const deleted = this.notes.filter((el) => el.isDeleted);
+
+        deleted.forEach((el) => {
+          this.deleteOnlineNote(el);
+        });
+      }
+    },
+  },
 
   async created() {
+    await this.openDB();
+
     await this.getNotes();
   },
   methods: {
+    async openDB() {
+      this.db = await openDB('notes', 1, {
+        upgrade(db) {
+          db.createObjectStore('notes', { keyPath: 'id' });
+        },
+      });
+    },
+
     async getNotes() {
+      if (this.offline) await this.getStoredNotes();
+      else await this.getOnlineNotes();
+    },
+    async getOnlineNotes() {
       try {
         const { data } = await axios({
           url: `${this.serverAddress}/notes`,
           method: 'GET',
         });
 
-        this.notes = data.sort((objA, objB) => {
+        this.notes = data
+          .sort((objA, objB) => {
+            let a = objA.name.toLowerCase();
+            let b = objB.name.toLowerCase();
+
+            if (a < b) {
+              return -1;
+            }
+            if (a > b) {
+              return 1;
+            }
+            return 0;
+          })
+          .map((el) => ({ ...el, isDeleted: false }));
+
+        this.db.clear('notes');
+        for (let e of this.notes) {
+          await this.db.put('notes', e);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getStoredNotes() {
+      const temp = await this.db.getAll('notes');
+      this.notes = temp
+        .sort((objA, objB) => {
           let a = objA.name.toLowerCase();
           let b = objB.name.toLowerCase();
 
@@ -89,24 +145,33 @@ export default {
             return 1;
           }
           return 0;
-        });
-      } catch (error) {
-        console.log(error);
-      }
+        })
+        .filter((el) => !el.isDeleted);
     },
 
     async deleteNote(id) {
+      if (this.offline) await this.deleteStoredNote(id);
+      else await this.deleteOnlineNote(id);
+
+      this.dialog = false;
+
+      await this.getNotes();
+    },
+    async deleteOnlineNote(id) {
       try {
         await axios({
           url: `${this.serverAddress}/notes/${id}`,
           method: 'DELETE',
         });
-
-        await this.getNotes();
-        this.dialog = false;
       } catch (error) {
         console.log(error);
       }
+    },
+    async deleteStoredNote(id) {
+      let note = await this.db.get('notes', Number(id));
+      note.isDeleted = true;
+
+      this.db.put('notes', note);
     },
   },
 };
