@@ -6,17 +6,19 @@ X 10 Responsive Design (mind.: Portrait, Landscape)
 X 10 Workbox für REST Service Calls (GET) konfiguriert (offline Read)
 Summe: 30
 
-5 Website Storage: Session-Store
-10 Website Storage: Index DB
-10 Pro Offline CUD Operation implementiert (siehe Arbeitsblatt)
-X 10 Einbindung von Outputs (Vibration, Text-2-Speech)
-5 PWA Feature: Background Local Notification
-5 PWA Feature: Background Push Messages (Server Push 2 Client)
-X 15 zusätzliche Sensoren: Camera, Write-To-Text-API, FileSystem
-Summe: 25
+--- 5 Website Storage: Session-Store
+X 10 Website Storage: Index DB
+3 X 10 Pro Offline CRUD Operation implementiert (siehe Arbeitsblatt)
+--- 10 Einbindung von Outputs (Vibration, Text-2-Speech)
+--- 5 PWA Feature: Background Local Notification
+--- 5 PWA Feature: Background Push Messages (Server Push 2 Client)
+3 X 5 zusätzliche Sensoren: Camera, Write-To-Text-API, FileSystem
+Summe: 35
 
 X 10 REST Server
 X 5 REST Server: DB Anbindung
 Summe: 15
 
-GESAMT: 70
+GESAMT: 100
+
+-4 Stunden Arbeit wegen BWKI/JI

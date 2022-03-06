@@ -15,13 +15,13 @@ if (workbox) {
 
   workbox.routing.registerRoute(
     '/fields',
-    new workbox.strategies.StaleWhileRevalidate({
+    new workbox.strategies.NetworkFirst({
       cacheName: 'field-cache',
     }),
   );
   workbox.routing.registerRoute(
     new RegExp('/fields/*'),
-    new workbox.strategies.StaleWhileRevalidate({
+    new workbox.strategies.NetworkFirst({
       cacheName: 'field-number-cache',
     }),
   );

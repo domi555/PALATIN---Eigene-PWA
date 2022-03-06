@@ -1,7 +1,13 @@
 <template>
   <div>
     <v-row class="ma-2">
-      <v-col v-for="note of notes" :key="note.id" cols="12" md="6" lg="4">
+      <v-col
+        v-for="note of notes.filter((el) => !el.isDeleted)"
+        :key="note.id"
+        cols="12"
+        md="6"
+        lg="4"
+      >
         <v-card class="mx-2 mt-3 elevation-4">
           <v-card-actions>
             <p class="ms-2 mb-0 text-subtitle-2">{{ note.name }}</p>
@@ -71,13 +77,11 @@ export default {
     },
   },
   watch: {
-    offline(online) {
-      console.log('synced');
-      if (online) {
+    offline(off) {
+      if (!off) {
         const deleted = this.notes.filter((el) => el.isDeleted);
-
         deleted.forEach((el) => {
-          this.deleteOnlineNote(el);
+          this.deleteOnlineNote(el.id);
         });
       }
     },
@@ -133,20 +137,18 @@ export default {
     },
     async getStoredNotes() {
       const temp = await this.db.getAll('notes');
-      this.notes = temp
-        .sort((objA, objB) => {
-          let a = objA.name.toLowerCase();
-          let b = objB.name.toLowerCase();
+      this.notes = temp.sort((objA, objB) => {
+        let a = objA.name.toLowerCase();
+        let b = objB.name.toLowerCase();
 
-          if (a < b) {
-            return -1;
-          }
-          if (a > b) {
-            return 1;
-          }
-          return 0;
-        })
-        .filter((el) => !el.isDeleted);
+        if (a < b) {
+          return -1;
+        }
+        if (a > b) {
+          return 1;
+        }
+        return 0;
+      });
     },
 
     async deleteNote(id) {
