@@ -13,7 +13,7 @@
     </v-app-bar>
 
     <v-main>
-      <router-view :serverAddress="serverAddress" />
+      <router-view :serverAddress="serverAddress" :offline="offline" />
     </v-main>
   </v-app>
 </template>
@@ -24,6 +24,12 @@ export default {
 
   data: () => ({
     serverAddress: process.env.VUE_APP_SERVER,
+    offline: false,
   }),
+
+  created() {
+    window.addEventListener('online', () => (this.offline = false));
+    window.addEventListener('offline', () => (this.offline = true));
+  },
 };
 </script>

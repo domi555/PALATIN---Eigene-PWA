@@ -8,20 +8,20 @@ if (workbox) {
 
   workbox.routing.registerRoute(
     '/notes',
-    new workbox.strategies.NetworkFirst({
+    new workbox.strategies.StaleWhileRevalidate({
       cacheName: 'note-cache',
     }),
   );
 
   workbox.routing.registerRoute(
     '/fields',
-    new workbox.strategies.NetworkFirst({
+    new workbox.strategies.StaleWhileRevalidate({
       cacheName: 'field-cache',
     }),
   );
   workbox.routing.registerRoute(
     new RegExp('/fields/*'),
-    new workbox.strategies.NetworkFirst({
+    new workbox.strategies.StaleWhileRevalidate({
       cacheName: 'field-number-cache',
     }),
   );

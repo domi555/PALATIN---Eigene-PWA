@@ -6,6 +6,7 @@
       label="Name..."
       v-model="name"
       @change="patchNote"
+      :disabled="offline"
     ></v-text-field>
 
     <v-card v-for="field of fields" :key="field.id" class="mb-3 elevation-4">
@@ -16,6 +17,7 @@
           label="Heading..."
           v-model="field.name"
           @input="patchField(fields.find((el) => el.id == field.id))"
+          :disabled="offline"
         ></v-text-field>
 
         <v-textarea
@@ -24,6 +26,7 @@
           label="Write..."
           v-model="field.content"
           @input="patchField(field)"
+          :disabled="offline"
         ></v-textarea>
 
         <img v-if="field.attachment" :src="field.attachment" class="mb-3" />
@@ -32,6 +35,7 @@
           small
           :to="`/pen/${field.id}`"
           class="me-2 orange lighten-1 white--text"
+          :disabled="offline"
           >Pen input</v-btn
         >
         <v-btn
@@ -39,6 +43,7 @@
           small
           :to="`/camera/${field.id}`"
           class="me-2 orange lighten-1 white--text"
+          :disabled="offline"
           >Take image</v-btn
         >
         <v-btn
@@ -69,6 +74,7 @@ export default {
   },
   props: {
     serverAddress: { type: String },
+    offline: { type: Boolean },
     id: {
       type: String,
     },
