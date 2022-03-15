@@ -12,7 +12,7 @@ X 10 Website Storage: Index DB
 --- 10 Einbindung von Outputs (Vibration, Text-2-Speech)
 --- 5 PWA Feature: Background Local Notification
 --- 5 PWA Feature: Background Push Messages (Server Push 2 Client)
-3 X 5 zusätzliche Sensoren: Camera, Write-To-Text-API, FileSystem
+3 X 5 zusätzliche Sensoren/APIs: Camera, Write-To-Text-API, FileSystem
 Summe: 35
 
 X 10 REST Server
@@ -20,5 +20,3 @@ X 5 REST Server: DB Anbindung
 Summe: 15
 
 GESAMT: 100
-
--4 Stunden Arbeit wegen BWKI/JI

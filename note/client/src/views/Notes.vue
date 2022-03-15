@@ -21,10 +21,10 @@
                 <v-btn
                   small
                   plain
-                  class="gray--text lighten-2"
+                  class="gray--text lighten-2 px-0"
                   v-bind="attrs"
                   v-on="on"
-                  >Drop</v-btn
+                  ><v-icon>mdi-delete</v-icon></v-btn
                 >
               </template>
               <v-card>
@@ -48,10 +48,10 @@
                 <v-btn
                   small
                   plain
-                  class="gray--text lighten-2"
+                  class="gray--text lighten-2 px-0"
                   v-bind="attrs"
                   v-on="on"
-                  >Rename</v-btn
+                  ><v-icon>mdi-pen</v-icon></v-btn
                 >
               </template>
               <v-card>

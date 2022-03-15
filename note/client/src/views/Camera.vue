@@ -54,6 +54,11 @@ export default {
     this.context = this.canvas.getContext('2d');
 
     try {
+      await navigator.mediaDevices.getUserMedia({
+        video: true,
+        facingMode: { exact: 'environment' },
+      });
+
       this.media = await navigator.mediaDevices.getUserMedia({
         video: true,
         facingMode: { exact: 'environment' },

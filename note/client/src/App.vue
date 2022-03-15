@@ -8,7 +8,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn small to="/" class="me-2 orange lighten-1">Note</v-btn>
+      <v-btn small to="/" class="me-2 orange lighten-1">Notes</v-btn>
       <v-btn small to="/edit/new" class="amber orange lighten-1">New</v-btn>
     </v-app-bar>
 
